@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CY7C68013A (EZ-USB FX2LP) — Practical Field Manual</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222c; --ink:#e6e9ef; --muted:#9aa3b2;
+    --accent:#5ec2ff; --accent2:#7CFFB2; --warn:#ffcf5c; --danger:#ff6b6b; --line:#2a3140;
+    --mono:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
+  header{padding:48px 24px 32px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#141821,#0f1115);}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+  h1{font-size:2.1rem;margin:0 0 6px;letter-spacing:-.5px;}
+  h1 .chip{color:var(--accent);}
+  .sub{color:var(--muted);font-size:1.05rem;margin:0;}
+  .tag{display:inline-block;font:600 11px/1 var(--mono);color:#0f1115;
+    background:var(--accent2);padding:5px 8px;border-radius:5px;margin-top:14px;letter-spacing:.5px;}
+  h2{margin:42px 0 14px;font-size:1.45rem;border-left:3px solid var(--accent);padding-left:12px;}
+  h3{margin:26px 0 10px;font-size:1.12rem;color:var(--accent2);}
+  p{margin:10px 0;}
+  code{font-family:var(--mono);background:var(--panel2);padding:2px 6px;border-radius:4px;font-size:.9em;}
+  pre{background:#0b0d12;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+    overflow:auto;font-family:var(--mono);font-size:.85rem;color:#d4dbe6;}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.92rem;}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top;}
+  th{background:var(--panel2);color:var(--accent);font-weight:600;}
+  tr:nth-child(even) td{background:#13161d;}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:16px 0;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:680px){.grid{grid-template-columns:1fr;}}
+  .note{border-left:3px solid var(--accent);background:#12202b;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;}
+  .warn{border-left:3px solid var(--warn);background:#241f10;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;}
+  .danger{border-left:3px solid var(--danger);background:#261314;padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;}
+  .pin{font-family:var(--mono);color:var(--accent2);font-weight:600;}
+  .ascii{background:#0b0d12;border:1px solid var(--line);border-radius:8px;padding:16px;
+    font-family:var(--mono);font-size:.8rem;color:#bcd;white-space:pre;overflow:auto;line-height:1.35;}
+  footer{margin:56px 0 24px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;}
+  a{color:var(--accent);}
+  .kbd{font-family:var(--mono);background:#222;border:1px solid #3a4150;border-bottom-width:2px;
+    border-radius:5px;padding:1px 6px;font-size:.82em;}
+  ul.tight li{margin:4px 0;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>The <span class="chip">HW-274</span> / CY7C68013A Field Manual</h1>
+    <p class="sub">A practical, plain-English guide to the <strong>HW-274</strong> FX2LP breakout — the Cypress EZ-USB&nbsp;FX2LP board sold as a cheap USB logic analyzer. Pins, ports, real silkscreen, and what it can actually do.</p>
+    <span class="tag">COMMUNITY EDITION &middot; v1.1 &middot; HW-274</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="note" style="margin-top:24px;"><strong>This manual is verified against a real HW-274 board</strong> (mini-USB, 24&nbsp;MHz crystal, marked <code>HW-274</code> on the lower silkscreen). Other FX2LP clones share the same chip but may relabel or reorder header pins — always cross-check your own board's silkscreen against the photo and tables below.</div>
+
+<figure style="margin:24px 0;text-align:center;">
+  <img src="board-hw-274.png" alt="HW-274 CY7C68013A FX2LP board with silkscreen labels visible" style="max-width:340px;width:100%;border:1px solid var(--line);border-radius:10px;">
+  <figcaption style="color:var(--muted);font-size:.85rem;margin-top:8px;">The HW-274 board this manual documents. Two pin headers (left &amp; right), mini-USB, 24&nbsp;MHz crystal, two buttons.</figcaption>
+</figure>
+
+<h2>1. What this thing is</h2>
+<p>The <strong>CY7C68013A</strong> is a <strong>USB&nbsp;2.0 High-Speed (480&nbsp;Mbps) microcontroller</strong> built around an enhanced 8051 core with a fast parallel "GPIF/Slave-FIFO" interface. It is the heart of the inexpensive blue/black breakout boards sold as <em>"24&nbsp;MHz 8-channel USB logic analyzers"</em> and as <em>"EZ-USB FX2LP development boards."</em></p>
+<p>Out of the box, with no EEPROM image programmed, it enumerates on a host PC as:</p>
+<pre>04b4:8613   Cypress Semiconductor Corp. CY7C68013 EZ-USB FX2 USB 2.0 Development Kit</pre>
+<p>That default identity is a blank slate. The board <em>becomes</em> whatever firmware is loaded into it — either permanently (written to the on-board I²C EEPROM) or temporarily (uploaded into RAM over USB at runtime):</p>
+<table>
+  <tr><th>Firmware loaded</th><th>The board becomes…</th></tr>
+  <tr><td><code>fx2lafw</code> (sigrok)</td><td>A <strong>logic analyzer</strong> — 8 channels, up to 24&nbsp;MS/s. The most common use.</td></tr>
+  <tr><td>Vendor / custom 8051 code</td><td>A USB-to-SPI / I²C / JTAG bridge, or a general 8051 dev board.</td></tr>
+  <tr><td>None</td><td>The raw <code>04b4:8613</code> device, awaiting an upload.</td></tr>
+</table>
+<div class="note"><strong>Key point:</strong> sigrok/PulseView can <em>upload</em> <code>fx2lafw</code> into the chip's RAM on the fly every time you scan — you do <strong>not</strong> have to permanently flash anything to use it as a logic analyzer.</div>
+
+<h2>2. The HW-274 board layout</h2>
+<p>The HW-274 routes the FX2's I/O ports to <strong>two pin headers</strong> — one on each side of the chip — rather than four separate port blocks. Below is the silkscreen as printed on the board (read directly from the photo above). Pins are listed top&nbsp;→&nbsp;bottom as the board sits with the USB connector at top.</p>
+
+<div class="warn"><strong>Read this from your own board too.</strong> The labels below were transcribed from a photographed HW-274; a few silk characters sit under header pins and are hard to read. Where a label was uncertain it is marked <code>(?)</code>. Confirm against your unit before wiring — and if yours differs, that's useful feedback for this repo.</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Left header (outer / inner columns)</h3>
+    <pre>outer   inner
+PD5     PD6
+PD7     GND
+CLK     GND
+RDY1    RDY0
+GND     VCC
+GND     IFCLK
+SCL     SDA
+PB0     PB1
+PB2     PB3
+GND     VCC</pre>
+  </div>
+  <div class="card">
+    <h3>Right header (inner / outer columns)</h3>
+    <pre>inner   outer
+PD3     PD2
+PD1     PD0
+PD0(?)  PA7
+PA6     PA5
+PA4     PA3
+PA2     PA1
+PA0     PB6
+PB7     CTL1(?)
+CTL0    PB5
+PB5(?)  PB4</pre>
+  </div>
+</div>
+<p style="color:var(--muted);font-size:.9rem;">The HW-274 exposes Port&nbsp;A (PA0–PA7), Port&nbsp;B (PB0–PB7), Port&nbsp;D (PD0–PD7), the I²C bus (SCL/SDA, to the EEPROM), clock/ready lines (CLK, IFCLK, RDY0/RDY1), GPIF control (CTL0/CTL1), and power (VCC&nbsp;=&nbsp;3.3&nbsp;V, GND). Note Port&nbsp;C is <em>not</em> broken out on this board.</p>
+
+<h3>The generic FX2LP port model (for reference)</h3>
+<p>Underneath the HW-274's labels, the FX2's four 8-bit ports map to the standard roles below — useful for understanding what each pin does electrically.</p>
+
+<div class="ascii">          ┌─────────────────────────────────────────┐
+          │   ┌───┐                                   │
+   USB ───┤   │FX2│   CY7C68013A          [EEPROM]    │
+   (mini/ │   └───┘                                   │
+   micro) │                                           │
+          │  PA0..PA7   PB0..PB7   PC0..PC7  PD0..PD7  │
+          │   ○○○○○○○○    ○○○○○○○○   ○○○○○○○○   ○○○○○○○○  │
+          │   (ctrl/IO)  (DATA L)  (gpio)    (DATA H)  │
+          │                                           │
+          │   3V3  5V  GND  GND  SCL SDA  RST  WAKEUP  │
+          └─────────────────────────────────────────┘</div>
+
+<h3>Full header reference</h3>
+<table>
+  <tr><th>Header / Pin</th><th>Count</th><th>What it is</th><th>Logic-analyzer role</th></tr>
+  <tr><td class="pin">PB0–PB7</td><td>8</td><td>Port B — FIFO data byte 0</td><td><strong>Capture channels CH0–CH7</strong> (the 8 inputs you probe with)</td></tr>
+  <tr><td class="pin">PD0–PD7</td><td>8</td><td>Port D — FIFO data byte 1</td><td>Channels 8–15, only with 16-ch firmware. Default <code>fx2lafw</code> = 8&nbsp;ch on PB.</td></tr>
+  <tr><td class="pin">PA0–PA7</td><td>8</td><td>Port A — control / GPIO. Several pins double as FIFO control (FLAGA, SLOE, SLRD, SLWR, PKTEND).</td><td>General I/O; not used by basic capture.</td></tr>
+  <tr><td class="pin">PC0–PC7</td><td>8</td><td>Port C — general-purpose I/O</td><td>Unused by basic logic analyzer.</td></tr>
+  <tr><td class="pin">GND</td><td>2+</td><td>Ground</td><td><strong>Common ground to the target — mandatory.</strong></td></tr>
+  <tr><td class="pin">3V3 / VCC</td><td>1+</td><td>3.3&nbsp;V rail, regulated on-board from USB 5&nbsp;V</td><td>Voltage reference only. <strong>Do not back-feed.</strong></td></tr>
+  <tr><td class="pin">5V / VBUS</td><td>1</td><td>USB bus 5&nbsp;V in</td><td>Rarely needed externally.</td></tr>
+  <tr><td class="pin">CTL0–2, RDY0/1</td><td>few</td><td>GPIF / Slave-FIFO handshake lines</td><td>Unused for capture.</td></tr>
+  <tr><td class="pin">SCL / SDA</td><td>2</td><td>I²C bus to the configuration EEPROM</td><td>Firmware / EEPROM programming only.</td></tr>
+  <tr><td class="pin">RESET / WAKEUP</td><td>1–2</td><td>8051 reset / USB remote-wake</td><td>Leave alone.</td></tr>
+</table>
+
+<h2>3. Electrical specs (the numbers that matter)</h2>
+<div class="grid">
+  <div class="card">
+    <h3>Logic levels</h3>
+    <ul class="tight">
+      <li>I/O is <strong>3.3&nbsp;V</strong> CMOS.</li>
+      <li>Inputs are <strong>NOT 5&nbsp;V tolerant</strong> — do not feed 5&nbsp;V signals in.</li>
+      <li>V<sub>IH</sub> ≈ 2.0&nbsp;V, V<sub>IL</sub> ≈ 0.8&nbsp;V.</li>
+      <li>Reads 1.8&nbsp;V signals fine as a passive listener (1.8&nbsp;V &gt; V<sub>IH</sub> threshold for "high" is marginal — verify per target).</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Capture limits (as fx2lafw LA)</h3>
+    <ul class="tight">
+      <li>Channels: <strong>8</strong> (on PB), 16 with special firmware.</li>
+      <li>Max sample rate: <strong>24&nbsp;MS/s</strong> (8-ch). Higher rates reduce channel count.</li>
+      <li>No on-board sample memory — streams live over USB, so sustained rate is USB-bound.</li>
+      <li>No analog, no protocol triggering in hardware (PulseView does software decode).</li>
+    </ul>
+  </div>
+</div>
+<div class="warn"><strong>Rule of thumb:</strong> sample at least <strong>4×</strong> (ideally 8–10×) your signal's fastest clock. For a 3&nbsp;MHz SPI bus, 24&nbsp;MS/s gives 8× — clean decode.</div>
+
+<h2>4. Using it as a logic analyzer</h2>
+<h3>Software setup (Linux)</h3>
+<pre>sudo apt install sigrok pulseview sigrok-firmware-fx2lafw
+
+# Plug the board in, then confirm it is seen and fx2lafw uploads:
+sigrok-cli --scan
+#   expected:  fx2lafw - 8 channels: D0 D1 D2 D3 D4 D5 D6 D7</pre>
+<p>If <code>--scan</code> shows <code>fx2lafw</code> with 8 channels, you're ready. Open <strong>PulseView</strong>, select the device, set the sample rate and count, and hit Run. Add a <em>protocol decoder</em> (SPI, I²C, UART, etc.) from the toolbar to turn raw traces into decoded bytes.</p>
+
+<h3>Wiring example — sniffing an SPI bus</h3>
+<table>
+  <tr><th>FX2 pin</th><th>Connect to target signal</th></tr>
+  <tr><td class="pin">PB0</td><td>SCLK (SPI clock)</td></tr>
+  <tr><td class="pin">PB1</td><td>MOSI (controller → peripheral)</td></tr>
+  <tr><td class="pin">PB2</td><td>MISO (peripheral → controller)</td></tr>
+  <tr><td class="pin">PB3</td><td>CS / SS (chip select)</td></tr>
+  <tr><td class="pin">GND</td><td>Target ground — connect this <em>first</em></td></tr>
+</table>
+<div class="note">Assign the PulseView <strong>SPI decoder</strong>'s CLK / MOSI / MISO / CS inputs to D0–D3 to match the wiring above, and decoded hex appears directly on the timeline.</div>
+
+<h2>5. Safety &amp; gotchas</h2>
+<div class="danger"><strong>Not 5 V tolerant.</strong> Driving a 5&nbsp;V signal into any port pin can damage the chip. Level-shift or divide anything above 3.3&nbsp;V.</div>
+<div class="warn"><strong>Passive sniffing means inputs only.</strong> When listening to a bus another device is driving, never let the FX2 also drive that line — contention can damage one or both devices. <code>fx2lafw</code> keeps the pins as high-impedance inputs by default.</div>
+<div class="warn"><strong>Ground first, signal second.</strong> Always establish common ground before clipping any data line, and remove data lines before ground when finished.</div>
+<div class="note"><strong>Don't back-feed the 3V3 pin.</strong> It is an output of the on-board regulator. Use it only as a reference, not to power the board from outside.</div>
+
+<h2>6. Quick troubleshooting</h2>
+<table>
+  <tr><th>Symptom</th><th>Likely cause / fix</th></tr>
+  <tr><td>Shows as <code>04b4:8613</code> but <code>sigrok-cli --scan</code> finds nothing</td><td>Missing <code>sigrok-firmware-fx2lafw</code> package — install it, replug.</td></tr>
+  <tr><td>Not detected at all</td><td>Bad/charge-only USB cable, or a permissions issue — try with <code>sudo</code> or add a udev rule.</td></tr>
+  <tr><td>Captured traces are all flat / all high</td><td>No common ground with target, or probing the wrong pins.</td></tr>
+  <tr><td>Decoder output is garbage</td><td>Sample rate too low (raise to ≥4× signal clock) or decoder channel mapping is wrong.</td></tr>
+  <tr><td>Want it permanent</td><td>Write <code>fx2lafw</code> to the I²C EEPROM with <code>cycfx2prog</code> / <code>fxload</code> (advanced; not required).</td></tr>
+</table>
+
+<footer>
+  <p>Practical Field Manual for the <strong>HW-274</strong> Cypress EZ-USB FX2LP (CY7C68013A) breakout board. Compiled from the device's USB behaviour, the sigrok/fx2lafw project, standard FX2LP port assignments, and the silkscreen of a real HW-274 unit. Provided as-is for the maker and embedded community — verify pin labels against your specific board's silkscreen before wiring.</p>
+  <p><strong>Authored by Claude Opus 4.8 (Anthropic).</strong> Hardware photo and board verification by the repository maintainer. Released for free community use — see LICENSE.</p>
+  <p>Tools referenced: <a href="https://sigrok.org/">sigrok</a> · PulseView · fx2lafw.</p>
+</footer>
+
+</div>
+</body>
+</html>

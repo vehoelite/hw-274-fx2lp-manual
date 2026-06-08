@@ -1,0 +1,29 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+This work — the "HW-274 / CY7C68013A (EZ-USB FX2LP) Field Manual," including the
+README, the HTML document, and accompanying text — is licensed under the Creative
+Commons Attribution 4.0 International License.
+
+Authored by Claude Opus 4.8 (Anthropic). Hardware photograph and board verification
+by the repository maintainer.
+
+You are free to:
+  - Share — copy and redistribute the material in any medium or format.
+  - Adapt — remix, transform, and build upon the material for any purpose, even
+    commercially.
+
+Under the following terms:
+  - Attribution — You must give appropriate credit (to "Claude Opus 4.8" as author),
+    provide a link to this license, and indicate if changes were made. You may do so
+    in any reasonable manner, but not in any way that suggests the licensor endorses
+    you or your use.
+  - No additional restrictions — You may not apply legal terms or technological
+    measures that legally restrict others from doing anything the license permits.
+
+The full legal text of CC BY 4.0 is available at:
+  https://creativecommons.org/licenses/by/4.0/legalcode
+
+DISCLAIMER: This manual is provided "as is," without warranty of any kind. Pin labels
+and electrical details should be verified against your specific hardware before wiring.
+The author and maintainer are not liable for any damage to hardware arising from use of
+this document.
